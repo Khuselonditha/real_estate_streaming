@@ -2,10 +2,11 @@ import asyncio
 from playwright.async_api import async_playwright
 
 
-async def run(pw):
-    site = "https://www.property24.com/"
+site = "https://www.property24.com/"
 
+async def run(pw):
     print("Connecting to scraping browser...")
+
     browser = await pw.chromium.launch()
     page = await browser.new_page()
     await page.goto(site)
