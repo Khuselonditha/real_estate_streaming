@@ -1,17 +1,27 @@
+import logging
 import asyncio
 from playwright.async_api import async_playwright
 
+# Logging config
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
 site = "https://www.property24.com/"
+location = "Sandton"
 
 async def run(pw):
-    print("Connecting to scraping browser...")
-
+    logging.info("Launching browser...")
     browser = await pw.chromium.launch()
-    page = await browser.new_page()
-    await page.goto(site)
-    print(await page.title())
-    await browser.close()
+
+    try:
+        logging.info(f"Navigating to {site}...")
+        page = await browser.new_page()
+        await page.goto(site)
+        title = await page.title()
+        logging.info(f"Page title: {title}")
+    except Exception as e:
+        logging.info(f"An error occurred dur to: {e}")
+    finally:
+        await browser.close()
 
 
 async def main():
