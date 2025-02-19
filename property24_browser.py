@@ -35,9 +35,9 @@ async def run(pw):
         await page.wait_for_load_state("networkidle")
 
         # Check if the container is visible
-        if not await page.locator("div.js_listingResultsContainer").is_visible():
+        if not await page.wait_for_selector("div.p24_tileContainer", state="visible", timeout=10000):
             logging.warning("Results container not found. Retrying...")
-            await page.wait_for_timeout(3000)  
+            await page.wait_for_timeout(10000)  
 
         # Get the updated inner HTML of the results container
         content = await page.inner_html("div.js_listingResultsContainer")
@@ -47,9 +47,9 @@ async def run(pw):
         soup = BeautifulSoup(content, "html.parser")
 
         # Find all divs with class starting with "p24_tileContainer js_resultTile"
-        tiles = soup.find_all("div", class_=lambda c: c and c.startswith("p24_tileContainer js_resultTile "))
+        tiles = (soup.find_all("div", class_=lambda c: c and ("p24_tileContainer" in c.split() 
+                    or any(cls.startswith("p24_tileContainer") for cls in c.split()))))
         logging.info(f"Found {len(tiles)} property tiles.")
-
 
         # Get the information from each search result
         for idx, div in enumerate(tiles):
