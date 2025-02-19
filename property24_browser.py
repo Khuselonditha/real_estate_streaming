@@ -41,14 +41,14 @@ async def run(pw):
 
         # Get the updated inner HTML of the results container
         content = await page.inner_html("div.js_listingResultsContainer")
+        # print(content)
         logging.info("Results page loaded successfully.")
 
         # Pass HTML to BeautifulSoup for parsing
         soup = BeautifulSoup(content, "html.parser")
 
         # Find all divs with class starting with "p24_tileContainer js_resultTile"
-        tiles = (soup.find_all("div", class_=lambda c: c and ("p24_tileContainer" in c.split() 
-                    or any(cls.startswith("p24_tileContainer") for cls in c.split()))))
+        tiles = soup.find_all("div", class_=lambda c: c and "js_resultTile" in c.split())
         logging.info(f"Found {len(tiles)} property tiles.")
 
         # Get the information from each search result
