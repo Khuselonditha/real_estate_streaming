@@ -25,21 +25,23 @@ async def run(pw):
 
         # Type "Sandton" and wait for suggestions
         await input_field.fill("Sandton")
-        await page.wait_for_timeout(4000)  # Adjust timeout based on how long it takes for suggestions to appear
-        await input_field.press('Enter')  # Simulate pressing Enter if necessary
+        await page.wait_for_timeout(4000) 
+        await input_field.press('Enter')  
 
         # Click the search button
         await page.locator("button.btn.btn-danger").click()
 
-        # Wait for results page to load
-        logging.info("Waiting for results to load...")
-        await page.wait_for_selector("div.js_listingResultsContainer", state="visible")
+        # Wait for network idle before scraping
+        await page.wait_for_load_state("networkidle")
 
-        # Get the inner HTML of the results container
+        # Check if the container is visible
+        if not await page.locator("div.js_listingResultsContainer").is_visible():
+            logging.warning("Results container not found. Retrying...")
+            await page.wait_for_timeout(3000)  
+
+        # Get the updated inner HTML of the results container
         content = await page.inner_html("div.js_listingResultsContainer")
         logging.info("Results page loaded successfully.")
-
-        print(content)             # Delete when refactoring
 
         # Pass HTML to BeautifulSoup for parsing
         soup = BeautifulSoup(content, "html.parser")
@@ -47,6 +49,41 @@ async def run(pw):
         # Find all divs with class starting with "p24_tileContainer js_resultTile"
         tiles = soup.find_all("div", class_=lambda c: c and c.startswith("p24_tileContainer js_resultTile "))
         logging.info(f"Found {len(tiles)} property tiles.")
+
+
+        # Get the information from each search result
+        for idx, div in enumerate(tiles):
+            data = {}
+
+            title_element = div.find("div", class_="p24_description")
+            address_element = div.find("span", class_="p24_address")
+            price_element = div.find("div", class_="p24_price")
+            size_element = div.find("span", class_="p24_size")
+            bedrooms_element = div.find("div", class_="p24_featureDetails", title="Bedrooms")
+            bathrooms_element = div.find("div", class_="p24_featureDetails", title="Bathrooms")
+            parking_element = div.find("div", class_="p24_featureDetails", title="Parking Spaces")
+
+            title = title_element.get_text() if title_element else None
+            address = address_element.get_text(strip=True) if address_element else None
+            price = price_element.get_text(strip=True) if price_element else None
+            size = size_element.get_text(strip=True) if size_element else None
+            bedrooms = bedrooms_element.get_text(strip=True) if bedrooms_element else None    
+            bathrooms = bathrooms_element.get_text(strip=True) if bathrooms_element else None    
+            parking = parking_element.get_text(strip=True) if parking_element else None    
+
+            data.update({
+                "title": title,
+                "address": address,
+                "price": price,
+                "size": size,
+                "bedrooms": bedrooms,
+                "bathrooms": bathrooms,
+                "parking": parking
+            })
+
+            print(data)
+            break
+
     except Exception as e:
         logging.info(f"An error occurred due to: {e}")
     finally:
