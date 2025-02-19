@@ -41,7 +41,6 @@ async def run(pw):
 
         # Get the updated inner HTML of the results container
         content = await page.inner_html("div.js_listingResultsContainer")
-        # print(content)
         logging.info("Results page loaded successfully.")
 
         # Pass HTML to BeautifulSoup for parsing
@@ -83,6 +82,27 @@ async def run(pw):
                 "parking": parking,
                 "link": f"{site}{link}" 
             })
+
+
+            # Navigate to everytile to get the pictures
+            tile = f"{site}{link}"
+            logging.info(f"Navigating to {tile}")
+            await page.goto(tile)
+            await page.wait_for_load_state("networkidle")
+
+            # Check if the pictures container is visible
+            if not await page.wait_for_selector("div.main-gallery-images-container", state="visible", timeout=10000):
+                logging.warning("Pictures container not found. Retrying...")
+                await page.wait_for_timeout(10000)
+
+            # Get the updated inner HTML of the pictures container
+            content = await page.inner_html("div.main-gallery-images-container")
+            logging.info("Pictures page loaded successfully.")
+
+            soup = BeautifulSoup(content, "html.parser")
+
+            # Return all pictures of each tile
+            pictures = get_pictures()
 
             print(data)
             break
