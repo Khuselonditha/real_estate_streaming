@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 # Logging config
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
-site = "https://www.property24.com/"
+site = "https://www.property24.com"
 location = "Sandton"
 
 async def run(pw):
@@ -62,6 +62,7 @@ async def run(pw):
             bedrooms_element = div.find("div", class_="p24_featureDetails", title="Bedrooms")
             bathrooms_element = div.find("div", class_="p24_featureDetails", title="Bathrooms")
             parking_element = div.find("div", class_="p24_featureDetails", title="Parking Spaces")
+            link = div.find("a")["href"]
 
             title = title_element.get_text() if title_element else None
             address = address_element.get_text(strip=True) if address_element else None
@@ -69,7 +70,8 @@ async def run(pw):
             size = size_element.get_text(strip=True) if size_element else None
             bedrooms = bedrooms_element.get_text(strip=True) if bedrooms_element else None    
             bathrooms = bathrooms_element.get_text(strip=True) if bathrooms_element else None    
-            parking = parking_element.get_text(strip=True) if parking_element else None    
+            parking = parking_element.get_text(strip=True) if parking_element else None
+                
 
             data.update({
                 "title": title,
@@ -78,7 +80,8 @@ async def run(pw):
                 "size": size,
                 "bedrooms": bedrooms,
                 "bathrooms": bathrooms,
-                "parking": parking
+                "parking": parking,
+                "link": f"{site}{link}" 
             })
 
             print(data)
