@@ -41,7 +41,7 @@ def extract_overviews(overview_div):
 
             if key in needed_values:
                 property_values[key] = value
-                
+
         except AttributeError:
             # Skip if any element is missing
             continue
@@ -91,7 +91,7 @@ async def run(pw):
         logging.info(f"Found {len(tiles)} property tiles.")
 
         # Get the information from each search result
-        for idx, div in enumerate(tiles):
+        for div in tiles:
             data = {}
 
             title_element = div.find("div", class_="p24_description")
