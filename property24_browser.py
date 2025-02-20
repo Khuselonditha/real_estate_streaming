@@ -21,8 +21,8 @@ def get_pictures(parent_div):
 def extract_overviews(overview_div):
     # Define the keys we are interested in
     needed_values = [
-        "Type of Property", "Description", "Lifestyle", "Listing Date",
-        "Levies", "No Transfer Duty", "Rates and Taxes", "Pets Allowed"]
+        "Type of Property", "Lifestyle", "Listing Date", "Levies", 
+        "No Transfer Duty", "Rates and Taxes", "Pets Allowed"]
     
     property_values = {key: None for key in needed_values}
 
