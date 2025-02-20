@@ -114,6 +114,8 @@ async def run(pw):
             logging.info(f"Found {len(picture_div)} images.")
             pictures = get_pictures(picture_div)
 
+            data["pictures"] = pictures
+
             print(data)
             break
 
