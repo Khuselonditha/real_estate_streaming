@@ -19,9 +19,7 @@ def get_pictures(parent_div):
     return pictures
 
 def extract_overviews(overview_div):
-    # Define the keys we are interested in
-    needed_values = [
-        "Type of Property", "Lifestyle", "Listing Date", "Levies", 
+    needed_values = ["Type of Property", "Lifestyle", "Listing Date", "Levies", 
         "No Transfer Duty", "Rates and Taxes", "Pets Allowed"]
     
     property_values = {key: None for key in needed_values}
@@ -149,7 +147,6 @@ async def run(pw):
             picture_div = soup.find_all("div", class_=lambda c: c and any(cls in c.split() for cls in ["p24_galleryImageHolder", "js_galleryImage"]))
             logging.info(f"Found {len(picture_div)} images.")
             pictures = get_pictures(picture_div)
-            data["pictures"] = pictures
 
             # Get inner HTMl of the "Property overview" container
             content = await page.inner_html("#js_accordion_propertyoverview")
@@ -163,6 +160,12 @@ async def run(pw):
             overviews = extract_overviews(property_overview_div)
             logging.info("Extaction successful")
             print(overviews)
+
+            logging.info("Adding property overviews to our data")
+            data.update(overviews)
+
+            logging.info("Adding pictures to our data")
+            data["pictures"] = pictures
 
             print(data)
             break
