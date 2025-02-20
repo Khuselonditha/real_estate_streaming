@@ -176,7 +176,6 @@ async def run(pw):
             logging.info("Extracting from the row p24_propertyOverviewRow div")
             overviews = extract_overviews(property_overview_div)
             logging.info("Extaction successful")
-            print(overviews)
 
             logging.info("Adding property overviews to our data")
             data.update(overviews)
