@@ -134,7 +134,7 @@ async def run(pw):
         
             # Check if the second container is visible
             if not await page.wait_for_selector("#js_accordion_propertyoverview", state="visible", timeout=10000):
-                logging.warning("Secondary pictures container not found. Retrying...")
+                logging.warning("Property overview container not found. Retrying...")
                 await page.wait_for_timeout(10000)
 
             # Get the updated inner HTML of the pictures container
