@@ -18,6 +18,36 @@ def get_pictures(parent_div):
 
     return pictures
 
+def extract_overviews(overview_div):
+    # Define the keys we are interested in
+    needed_values = [
+        "Type of Property", "Description", "Lifestyle", "Listing Date",
+        "Levies", "No Transfer Duty", "Rates and Taxes", "Pets Allowed"]
+    
+    property_values = {key: None for key in needed_values}
+
+    if not overview_div:
+        return property_values
+
+    for div in overview_div:
+        try:
+            # Extract the key (e.g., "Type of Property")
+            key_element = div.find("div", class_="col-6 p24_propertyOverviewKey")
+            key = key_element.text.strip() if key_element else None
+
+            # Extract the value (e.g., "Townhouse")
+            value_element = div.find("div", class_="col-6 noPadding").find("div", class_="p24_info")
+            value = value_element.text.strip() if value_element else None
+
+            if key in needed_values:
+                property_values[key] = value
+                
+        except AttributeError:
+            # Skip if any element is missing
+            continue
+
+    return property_values
+
 
 async def run(pw):
     logging.info("Launching browser...")
@@ -103,9 +133,15 @@ async def run(pw):
                 logging.warning("Pictures container not found. Retrying...")
                 await page.wait_for_timeout(10000)
 
+        
+            # Check if the second container is visible
+            if not await page.wait_for_selector("#js_accordion_propertyoverview", state="visible", timeout=10000):
+                logging.warning("Secondary pictures container not found. Retrying...")
+                await page.wait_for_timeout(10000)
+
             # Get the updated inner HTML of the pictures container
             content = await page.inner_html("#main-gallery-images-container")
-            logging.info("Pictures page loaded successfully.")
+            logging.info("Pictures div loaded successfully.")
 
             soup = BeautifulSoup(content, "html.parser")
 
@@ -114,6 +150,19 @@ async def run(pw):
             logging.info(f"Found {len(picture_div)} images.")
             pictures = get_pictures(picture_div)
             data["pictures"] = pictures
+
+            # Get inner HTMl of the "Property overview" container
+            content = await page.inner_html("#js_accordion_propertyoverview")
+            logging.info("PropertiesOverview div loaded successfully.")
+
+            soup = BeautifulSoup(content, "html.parser")
+
+            # Return values needed
+            property_overview_div = soup.find_all("div", class_="row p24_propertyOverviewRow")
+            logging.info("Extracting from the row p24_propertyOverviewRow div")
+            overviews = extract_overviews(property_overview_div)
+            logging.info("Extaction successful")
+            print(overviews)
 
             print(data)
             break
