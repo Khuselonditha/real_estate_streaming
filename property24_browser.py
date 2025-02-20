@@ -9,11 +9,14 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(
 site = "https://www.property24.com"
 location = "Sandton"
 
-
 def get_pictures(parent_div):
     pictures = []
-    for indx, div in enumerate(parent_div):
-        picture = div.find("")
+    for div in parent_div:
+        img_tag = div.get('data-image-url')
+        if img_tag:
+            pictures.append(img_tag)
+
+    return pictures
 
 
 async def run(pw):
@@ -89,8 +92,6 @@ async def run(pw):
                 "parking": parking,
                 "link": f"{site}{link}" 
             })
-
-
             # Navigate to everytile to get the pictures
             tile = f"{site}{link}"
             logging.info(f"Navigating to {tile}")
@@ -111,8 +112,7 @@ async def run(pw):
             # Return all pictures of each tile
             picture_div = soup.find_all("div", class_=lambda c: c and any(cls in c.split() for cls in ["p24_galleryImageHolder", "js_galleryImage"]))
             logging.info(f"Found {len(picture_div)} images.")
-            # print(picture_div)
-            # pictures = get_pictures(picture_div)
+            pictures = get_pictures(picture_div)
 
             print(data)
             break
