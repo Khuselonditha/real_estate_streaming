@@ -9,6 +9,13 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(
 site = "https://www.property24.com"
 location = "Sandton"
 
+
+def get_pictures(parent_div):
+    pictures = []
+    for indx, div in enumerate(parent_div):
+        picture = div.find("")
+
+
 async def run(pw):
     logging.info("Launching browser...")
     browser = await pw.chromium.launch(headless=False)
@@ -58,9 +65,9 @@ async def run(pw):
             address_element = div.find("span", class_="p24_address")
             price_element = div.find("div", class_="p24_price")
             size_element = div.find("span", class_="p24_size")
-            bedrooms_element = div.find("div", class_="p24_featureDetails", title="Bedrooms")
-            bathrooms_element = div.find("div", class_="p24_featureDetails", title="Bathrooms")
-            parking_element = div.find("div", class_="p24_featureDetails", title="Parking Spaces")
+            bedrooms_element = div.find("span", class_="p24_featureDetails", title="Bedrooms")
+            bathrooms_element = div.find("span", class_="p24_featureDetails", title="Bathrooms")
+            parking_element = div.find("span", class_="p24_featureDetails", title="Parking Spaces")
             link = div.find("a")["href"]
 
             title = title_element.get_text() if title_element else None
@@ -91,18 +98,21 @@ async def run(pw):
             await page.wait_for_load_state("networkidle")
 
             # Check if the pictures container is visible
-            if not await page.wait_for_selector("div.main-gallery-images-container", state="visible", timeout=10000):
+            if not await page.wait_for_selector("#main-gallery-images-container", state="visible", timeout=10000):
                 logging.warning("Pictures container not found. Retrying...")
                 await page.wait_for_timeout(10000)
 
             # Get the updated inner HTML of the pictures container
-            content = await page.inner_html("div.main-gallery-images-container")
+            content = await page.inner_html("#main-gallery-images-container")
             logging.info("Pictures page loaded successfully.")
 
             soup = BeautifulSoup(content, "html.parser")
 
             # Return all pictures of each tile
-            pictures = get_pictures()
+            picture_div = soup.find_all("div", class_=lambda c: c and any(cls in c.split() for cls in ["p24_galleryImageHolder", "js_galleryImage"]))
+            logging.info(f"Found {len(picture_div)} images.")
+            # print(picture_div)
+            # pictures = get_pictures(picture_div)
 
             print(data)
             break
