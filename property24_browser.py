@@ -113,7 +113,6 @@ async def run(pw):
             picture_div = soup.find_all("div", class_=lambda c: c and any(cls in c.split() for cls in ["p24_galleryImageHolder", "js_galleryImage"]))
             logging.info(f"Found {len(picture_div)} images.")
             pictures = get_pictures(picture_div)
-
             data["pictures"] = pictures
 
             print(data)
