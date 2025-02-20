@@ -47,6 +47,29 @@ def extract_overviews(overview_div):
     return property_values
 
 
+async def check_containers_visible(page):
+    try:
+        # Check if the pictures container is visible
+        if not await page.wait_for_selector("#main-gallery-images-container", state="visible", timeout=10000):
+            logging.warning("Pictures container not found. Retrying...")
+            await page.wait_for_timeout(10000)
+            return False
+
+        # Check if the second container is visible
+        if not await page.wait_for_selector("#js_accordion_propertyoverview", state="visible", timeout=10000):
+            logging.warning("Property overview container not found. Retrying...")
+            await page.wait_for_timeout(10000)
+            return False
+        
+        # Both containers are visible
+        return True
+
+    except Exception as e:
+        logging.info(f"Error while checking containers due to: {e}")
+        return False
+
+
+
 async def run(pw):
     logging.info("Launching browser...")
     browser = await pw.chromium.launch(headless=False)
@@ -126,16 +149,10 @@ async def run(pw):
             await page.goto(tile)
             await page.wait_for_load_state("networkidle")
 
-            # Check if the pictures container is visible
-            if not await page.wait_for_selector("#main-gallery-images-container", state="visible", timeout=10000):
-                logging.warning("Pictures container not found. Retrying...")
-                await page.wait_for_timeout(10000)
-
-        
-            # Check if the second container is visible
-            if not await page.wait_for_selector("#js_accordion_propertyoverview", state="visible", timeout=10000):
-                logging.warning("Property overview container not found. Retrying...")
-                await page.wait_for_timeout(10000)
+            # Check if the pictures containers are visible
+            if not await check_containers_visible(page):
+                logging.warning("One of the containers is not found. Skipping this tile...")
+                continue
 
             # Get the updated inner HTML of the pictures container
             content = await page.inner_html("#main-gallery-images-container")
