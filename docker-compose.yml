@@ -22,7 +22,7 @@ services:
       - the_wire
 
   kafka-broker:
-    image: confluentinc/cp-server:7.4.0
+    image: confluentinc/cp-server:7.5.0
     hostname: kafka-broker
     container_name: kafks-broker
     depends_on:
