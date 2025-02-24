@@ -99,7 +99,7 @@ services:
     networks:
       - the_wire
 
-  spark-worker: &spark-worker-image
+  spark-worker-1: &spark-worker-image
     <<: *spark-common
     container_name: spark-worker-1
     command: bin/spark-class org.apache.spark.deploy.worker.Worker spark://spark-master:7077
@@ -112,3 +112,11 @@ services:
       SPARK_MASTER_URL: spark://spark-master:7077
     networks:
       - the_wire
+
+  spark-worker-2:
+    <<: *spark-worker-image
+    container_name: spark-worker-2
+
+  spark-worker-3:
+    <<: *spark-worker-image
+    container_name: spark-worker-3
