@@ -2,6 +2,8 @@ import logging
 import asyncio
 from playwright.async_api import async_playwright
 from bs4 import BeautifulSoup
+from kafka import KafkaProducer
+
 
 # Logging config
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
