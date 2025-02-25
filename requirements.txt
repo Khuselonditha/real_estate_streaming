@@ -1,3 +1,4 @@
 playwright
 # After installing, run "playwright install" to download browser binaries.
 bs4
+kafka-python
