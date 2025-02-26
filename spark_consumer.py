@@ -41,6 +41,25 @@ def create_table(session):
     logging.info("Table created successfully.")
 
 
+def insert_data(session, **kwargs):
+    logging.info("Inserting data...")
+
+    query = """
+        INSERT INTO property_streams.properties(title, address, price, size, 
+            bedrooms, bathrooms, parking, link, type_of_property, lifestyle, 
+            listing_date, levies, no_transfer_duty, rates_and_taxes, pets_allowed, 
+            pictures)
+        VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+    """
+    
+    try:
+        session.execute(query, **kwargs.values())
+        logging.info("Data inserted successfully.")
+    except Exception as e:
+        logging.error(f"Failed to insert data: {e}")
+        raise
+
+
 def create_cassandra_session():
     try:
         session = Cluster(['localhost']).connect()
@@ -97,7 +116,7 @@ def main():
     
     cassandra_query = (kafka_df.writeStream
                        .foreachBatch(lambda batch_df, batch_id: batch_df.foreach(
-                           lambda row: insert_data(cassandra_session(), **row.asDict())))
+                           lambda row: insert_data(create_cassandra_session(), **row.asDict())))
                        )
 
 
