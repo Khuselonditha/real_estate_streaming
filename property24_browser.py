@@ -22,10 +22,17 @@ def get_pictures(parent_div):
     return pictures
 
 def extract_overviews(overview_div):
-    needed_values = ["Type of Property", "Lifestyle", "Listing Date", "Levies", 
-        "No Transfer Duty", "Rates and Taxes", "Pets Allowed"]
-    
-    property_values = {key: None for key in needed_values}
+    needed_values = {
+        "Type of Property": "type_of_property",
+        "Lifestyle": "lifestyle",
+        "Listing Date": "listing_date",
+        "Levies": "levies",
+        "No Transfer Duty": "no_transfer_duty",
+        "Rates and Taxes": "rates_and_taxes",
+        "Pets Allowed": "pets_allowed"
+    }
+
+    property_values = {new_key: None for new_key in needed_values.values()}
 
     if not overview_div:
         return property_values
@@ -41,7 +48,7 @@ def extract_overviews(overview_div):
             value = value_element.text.strip() if value_element else None
 
             if key in needed_values:
-                property_values[key] = value
+                property_values[needed_values[key]] = value
 
         except AttributeError:
             # Skip if any element is missing
