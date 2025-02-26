@@ -24,22 +24,22 @@ def main():
             .load())
     
     schema = StructType([
-        StructField("title", StringType(), True),
-        StructField("address", StringType(), True),
-        StructField("price", StringType(), True),
-        StructField("size", StringType(), True),
-        StructField("bedrooms", StringType(), True),
-        StructField("bathrooms", StringType(), True),
-        StructField("parking", StringType(), True),
-        StructField("link", StringType(), True),
-        StructField("type of property", StringType(), True),
-        StructField("lifestyle", StringType(), True),
-        StructField("listing date", StringType(), True),
+        StructField("Title", StringType(), True),
+        StructField("Address", StringType(), True),
+        StructField("Price", StringType(), True),
+        StructField("Size", StringType(), True),
+        StructField("Bedrooms", StringType(), True),
+        StructField("Bathrooms", StringType(), True),
+        StructField("Parking", StringType(), True),
+        StructField("Link", StringType(), True),
+        StructField("Type of Property", StringType(), True),
+        StructField("Lifestyle", StringType(), True),
+        StructField("Listing Date", StringType(), True),
         StructField("levies", StringType(), True),
-        StructField("no trasfer duty", StringType(), True),
-        StructField("rates and taxes", StringType(), True),
-        StructField("pets allowed", StringType(), True),
-        StructField("pictures", ArrayType(StringType()), True)
+        StructField("No Trasfer Duty", StringType(), True),
+        StructField("Rates and Taxes", StringType(), True),
+        StructField("Pets Allowed", StringType(), True),
+        StructField("Pictures", ArrayType(StringType()), True)
     ])
 
 if __name__ == "__main__":
