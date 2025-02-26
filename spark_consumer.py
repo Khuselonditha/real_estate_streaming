@@ -6,6 +6,18 @@ from pyspark.sql.types import StringType, StructField, StructType, ArrayType
 from pyspark.sql.functions import from_json, col
 
 
+def create_cassandra_session():
+    try:
+        session = Cluster(['localhost']).connect()
+
+        if session is not None:
+            create_keyspace(session)
+            create_table(session)
+
+    except Exception as e:
+        logging.error(f"Couldn't create the cassandra connection due to {e}")
+
+        return None
 
 
 def main():
