@@ -195,6 +195,7 @@ async def run(pw):
 
 
 async def main():
+    producer = KafkaProducer(bootstrap_servers=["localhost:9092"], max_block_ms=5000)
     async with async_playwright() as playwright:
         await run(playwright)
 
