@@ -32,13 +32,13 @@ def main():
         StructField("bathrooms", StringType(), True),
         StructField("parking", StringType(), True),
         StructField("link", StringType(), True),
-        StructField("type_of_property", StringType(), True),
+        StructField("type of property", StringType(), True),
         StructField("lifestyle", StringType(), True),
-        StructField("listing_date", StringType(), True),
+        StructField("listing date", StringType(), True),
         StructField("levies", StringType(), True),
-        StructField("trasfer_dute", StringType(), True),
-        StructField("rates_and_taxes", StringType(), True),
-        StructField("pets", StringType(), True),
+        StructField("no trasfer duty", StringType(), True),
+        StructField("rates and taxes", StringType(), True),
+        StructField("pets allowed", StringType(), True),
         StructField("pictures", ArrayType(StringType()), True)
     ])
 
