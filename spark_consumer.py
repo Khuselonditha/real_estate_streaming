@@ -12,6 +12,8 @@ def create_keyspace(session):
         WITH replication = {'class': 'SimpleStrategy', replication_factor: '1'};
     """)
 
+    logging.info("Keyspace created successfully.")
+
 
 def create_table(session):
     session.execute("""
