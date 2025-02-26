@@ -47,6 +47,11 @@ def main():
     kafka_df = (kafka_df.selectExpr("CAST(value AS STRING) as value")
            .select(from_json(col("value"), schema).alias("data"))
            .select("data.*"))
+    
+    cassandra_query = (kafka_df.writeStream
+                       .foreachBatch(lambda batch_df, batch_id: batch_df.foreach(
+                           lambda row: insert_data(cassandra_session(), **row.asDict())))
+                       )
 
 
 
