@@ -6,6 +6,13 @@ from pyspark.sql.types import StringType, StructField, StructType, ArrayType
 from pyspark.sql.functions import from_json, col
 
 
+def create_keyspace(session):
+    session.execute("""
+        CREATE IF NOT EXISTS property_streams
+        WITH replication = {'class': 'SimpleStrategy', replication_factor: '1'};
+    """)
+
+
 def create_cassandra_session():
     try:
         session = Cluster(['localhost']).connect()
