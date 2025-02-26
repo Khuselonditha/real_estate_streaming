@@ -41,7 +41,7 @@ def extract_overviews(overview_div):
             value = value_element.text.strip() if value_element else None
 
             if key in needed_values:
-                property_values[key] = value
+                property_values[key.lower()] = value
 
         except AttributeError:
             # Skip if any element is missing
