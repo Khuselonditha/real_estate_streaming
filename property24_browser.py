@@ -1,3 +1,4 @@
+import json
 import logging
 import asyncio
 from playwright.async_api import async_playwright
@@ -72,7 +73,7 @@ async def check_containers_visible(page):
 
 
 
-async def run(pw):
+async def run(pw, producer):
     logging.info("Launching browser...")
     browser = await pw.chromium.launch(headless=False)
 
@@ -185,6 +186,9 @@ async def run(pw):
             logging.info("Adding pictures to our data")
             data["pictures"] = pictures
 
+            logging.info("Sending data to kafka")
+            producer.send("properties", json.dumps(data).encode("utf-8"))
+            logging.info("Data sent to kafka")
             print(data)
             break
 
