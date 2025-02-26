@@ -41,7 +41,7 @@ def extract_overviews(overview_div):
             value = value_element.text.strip() if value_element else None
 
             if key in needed_values:
-                property_values[key.lower()] = value
+                property_values[key] = value
 
         except AttributeError:
             # Skip if any element is missing
@@ -73,7 +73,7 @@ async def check_containers_visible(page):
 
 
 
-async def run(pw, producer):
+async def run(pw):
     logging.info("Launching browser...")
     browser = await pw.chromium.launch(headless=False)
 
@@ -137,14 +137,14 @@ async def run(pw, producer):
                 
 
             data.update({
-                "title": title,
-                "address": address,
-                "price": price,
-                "size": size,
-                "bedrooms": bedrooms,
-                "bathrooms": bathrooms,
-                "parking": parking,
-                "link": f"{site}{link}" 
+                "Title": title,
+                "Address": address,
+                "Price": price,
+                "Size": size,
+                "Bedrooms": bedrooms,
+                "Bathrooms": bathrooms,
+                "Parking": parking,
+                "Link": f"{site}{link}" 
             })
             # Navigate to everytile to get the pictures
             tile = f"{site}{link}"
@@ -184,11 +184,11 @@ async def run(pw, producer):
             data.update(overviews)
 
             logging.info("Adding pictures to our data")
-            data["pictures"] = pictures
+            data["Pictures"] = pictures
 
-            logging.info("Sending data to kafka")
-            producer.send("properties", json.dumps(data).encode("utf-8"))
-            logging.info("Data sent to kafka")
+            # logging.info("Sending data to kafka")
+            # producer.send("properties", json.dumps(data).encode("utf-8"))
+            # logging.info("Data sent to kafka")
             print(data)
             break
 
@@ -199,7 +199,7 @@ async def run(pw, producer):
 
 
 async def main():
-    producer = KafkaProducer(bootstrap_servers=["localhost:9092"], max_block_ms=5000)
+    # producer = KafkaProducer(bootstrap_servers=["localhost:9092"], max_block_ms=5000)
     async with async_playwright() as playwright:
         await run(playwright)
 
