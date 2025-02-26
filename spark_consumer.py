@@ -3,6 +3,8 @@ import logging
 from cassandra.cluster import Cluster
 from pyspark.sql import SparkSession
 from pyspark.sql.types import StringType, StructField, StructType, ArrayType
+from pyspark.sql.functions import from_json, col
+
 
 
 
@@ -41,6 +43,12 @@ def main():
         StructField("Pets Allowed", StringType(), True),
         StructField("Pictures", ArrayType(StringType()), True)
     ])
+
+    kafka_df = (kafka_df.selectExpr("CAST(value AS STRING) as value")
+           .select(from_json(col("value"), schema).alias("data"))
+           .select("data.*"))
+
+
 
 if __name__ == "__main__":
     main()
