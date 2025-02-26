@@ -13,6 +13,32 @@ def create_keyspace(session):
     """)
 
 
+def create_table(session):
+    session.execute("""
+        CREATE TABLE IF NOT EXISTS property_streams.properties(
+            title TEXT,
+            address TEXT,
+            price TEXT,
+            size TEXT,
+            bedrooms TEXT,
+            bathrooms TEXT,
+            parking TEXT,
+            link TEXT,
+            type_of_property TEXT,
+            lifestyle TEXT,
+            listing_date TEXT,
+            levies TEXT,
+            no_transfer_duty TEXT,
+            rates_and_taxes TEXT,
+            pets_allowed TEXT,
+            pictures list<TEXT>,
+            PRIMARY KEY (link)
+        );          
+    """)
+
+    logging.info("Table created successfully.")
+
+
 def create_cassandra_session():
     try:
         session = Cluster(['localhost']).connect()
