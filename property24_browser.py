@@ -144,14 +144,14 @@ async def run(pw):
                 
 
             data.update({
-                "Title": title,
-                "Address": address,
-                "Price": price,
-                "Size": size,
-                "Bedrooms": bedrooms,
-                "Bathrooms": bathrooms,
-                "Parking": parking,
-                "Link": f"{site}{link}" 
+                "title": title,
+                "address": address,
+                "price": price,
+                "size": size,
+                "bedrooms": bedrooms,
+                "bathrooms": bathrooms,
+                "parking": parking,
+                "link": f"{site}{link}" 
             })
             # Navigate to everytile to get the pictures
             tile = f"{site}{link}"
@@ -191,7 +191,7 @@ async def run(pw):
             data.update(overviews)
 
             logging.info("Adding pictures to our data")
-            data["Pictures"] = pictures
+            data["pictures"] = pictures
 
             # logging.info("Sending data to kafka")
             # producer.send("properties", json.dumps(data).encode("utf-8"))
